@@ -1,6 +1,8 @@
 package pp
 {
 	import flash.display.Sprite;
+	import logit.LLogTag;
+	import logit.Logit;
 	
 	/**
 	 * ...
@@ -12,13 +14,18 @@ package pp
 		
 		public function Main() 
 		{
+			var logit :Logit = Logit.getInstance();
+			
+			//logit.addTags( createTags() );
 			//log("Hello World", "boom")
-			slog(this, "Hello from sender", "boom")
-			slog(this, "BAH BAH BAH")
 			
-			var test :TestClass = new TestClass();
-			
-			slog(this, "back to me!")
+			createLogTags();
+		}
+		
+		private function createLogTags() :XML
+		{
+			return <root>
+				</root>
 		}
 		
 	}

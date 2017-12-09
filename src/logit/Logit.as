@@ -25,7 +25,9 @@ package logit
 		
 		private var _logOutput :LLogOutput = DEFAULT_LOG_TYPE;
 		
-		private static var _lastSenderName :String;
+		private var _lastSenderName :String;
+		
+		private var _tags : XML = new XML();
 		
 		public function Logit() 
 		{
@@ -34,8 +36,13 @@ package logit
 				throw new Error("Illegal attempt to instanciate Singleton class 'Logit'");
 			}
 			
+			_tags = createInitialTags();
+			
 			logHeader();
 		}
+		
+		
+		// Auto Logs
 		
 		private function logHeader( timestamp :Boolean = true ) :void
 		{
@@ -45,14 +52,41 @@ package logit
 				slog(this, LOG_HEADER, "\n");
 		}
 		
+		// Log Modes
+		// TRACE
+		
 		private function logTrace(...args : *) :void
 		{
 			trace.apply(this, args);
 		}
 		
+		// - log
+		
+		public function log(...args : *) :void
+		{
+			switch(  _logOutput )
+			{
+				case LLogOutput.LOGIT_LOG_TRACE:
+				default:
+					logTrace.apply(this, parseLog( args ));
+			}
+		}
+		
 		private function parseLog( log :* ) :*
 		{
 			return log
+		}
+		
+		// - slog
+		
+		public function slog(sender :*, ...args : * ) :void
+		{
+			switch( _logOutput )
+			{
+				case LLogOutput.LOGIT_LOG_TRACE:
+				default:
+					logTrace.apply( this, parseSLog(sender, args) );
+			}
 		}
 		
 		private function parseSLog( sender :*, log:* ) :*
@@ -74,28 +108,31 @@ package logit
 			{
 				return " > "
 			}
-			
-			
 		}
 		
-		public function log(...args : *) :void
+		// Tags
+		
+		private function createInitialTags() :XML
 		{
-			switch(  _logOutput )
-			{
-				case LLogOutput.LOGIT_LOG_TRACE:
-				default:
-					logTrace.apply(this, parseLog( args ));
-			}
+			var root :String = LLogTag.ROOT;
+			
+			var initialTags :XML =
+				<{LLogTag.ROOT}>
+					<{LLogTag.ERROR}/>
+					<{LLogTag.RELEASE}/>
+					<{LLogTag.DEBUG}>
+						<{LLogTag.WARNING}/>
+					</{LLogTag.DEBUG}>
+				</{LLogTag.ROOT}>
+			
+						trace( initialTags );
+			return initialTags;
 		}
 		
-		public function slog(sender :*, ...args : * ) :void
+		public function addTags( rootTag : String, tags :XML ) :void
 		{
-			switch( _logOutput )
-			{
-				case LLogOutput.LOGIT_LOG_TRACE:
-				default:
-					logTrace.apply( this, parseSLog(sender, args) );
-			}
+			var xml :XML = initialTags[ rootTag ];
+			xml.push( tags );
 		}
 	}
 }
