@@ -1,4 +1,4 @@
-package logit 
+package mywoodstock.logit 
 {
 	import flash.utils.getQualifiedClassName;
 	/**
@@ -66,7 +66,7 @@ package logit
 		
 		public function log(tags :Array, ...args : *) :void
 		{
-			if ( ignoreTags( tags ) )
+			if ( ! _enabled || ignoreTags( tags ) )
 				return;
 				
 			switch(  _logOutput )
@@ -87,7 +87,7 @@ package logit
 		
 		public function slog(sender :*, tags :Array,  ...args :* ) :void
 		{
-			if ( ignoreTags( tags ) )
+			if ( ! _enabled || ignoreTags( tags ) )
 				return;
 			
 			switch( _logOutput )

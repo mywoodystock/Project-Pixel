@@ -1,6 +1,6 @@
 package  
 {
-	import logit.Logit;
+	import mywoodstock.logit.Logit;
 	/**
 	 * ...
 	 * @author Adam
