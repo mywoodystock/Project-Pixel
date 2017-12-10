@@ -10,7 +10,12 @@ package pp
 		
 		public function TestClass() 
 		{
-			slog(this, "Im a new sender");
+			
+		}
+		
+		public function test() :void
+		{
+			trace("test")
 		}
 		
 	}

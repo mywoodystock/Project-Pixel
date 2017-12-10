@@ -6,9 +6,9 @@ package
 	 * ...
 	 * @author Adam
 	 */
-	public function slog(sender :*, ...args : *) :void
+	public function slog(sender :*, tags :Array, ...args : *) :void
 	{
-		Logit.getInstance().slog.apply(this, [sender].concat(args));
+		Logit.instance.slog.apply(this, [sender, tags].concat(args));
 	}
 
 }

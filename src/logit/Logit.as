@@ -15,28 +15,30 @@ package logit
 		private static const LOG_HEADER :String = "Logit v" + VERSION
 		
 		private static var _instance :Logit;
-		public static function getInstance() :Logit
+		public static function get instance() :Logit
 		{
 			if ( _instance == null )
-				_instance = new Logit();
+				new Logit();
 				
 			return _instance
 		}
 		
+		private var _enabled :Boolean = true;
+		
 		private var _logOutput :LLogOutput = DEFAULT_LOG_TYPE;
+		
+		private var _tagIgnoreList :Vector.<String> = new <String>[];
 		
 		private var _lastSenderName :String;
 		
-		private var _tags : XML = new XML();
-		
 		public function Logit() 
 		{
-			if ( _instance != null )
+			if ( _instance )
 			{
-				throw new Error("Illegal attempt to instanciate Singleton class 'Logit'");
+				throw new Error("Illegal attempt to instanciate Singleton class. Use Logit.instance");
 			}
 			
-			_tags = createInitialTags();
+			_instance = this;
 			
 			logHeader();
 		}
@@ -47,9 +49,9 @@ package logit
 		private function logHeader( timestamp :Boolean = true ) :void
 		{
 			if( timestamp )
-				slog(this, LOG_HEADER, new Date().toUTCString(), "\n");
+				slog(this, [], LOG_HEADER, new Date().toUTCString(), "\n");
 			else
-				slog(this, LOG_HEADER, "\n");
+				slog(this, [], LOG_HEADER, "\n");
 		}
 		
 		// Log Modes
@@ -62,37 +64,47 @@ package logit
 		
 		// - log
 		
-		public function log(...args : *) :void
+		public function log(tags :Array, ...args : *) :void
 		{
+			if ( ignoreTags( tags ) )
+				return;
+				
 			switch(  _logOutput )
 			{
 				case LLogOutput.LOGIT_LOG_TRACE:
 				default:
-					logTrace.apply(this, parseLog( args ));
+					logTrace.apply(this, parseLog( tags, args ));
 			}
 		}
 		
-		private function parseLog( log :* ) :*
+		private function parseLog( tags :Array, log :* ) :*
 		{
-			return log
+			var tagLogString :String = generateTagLogString( tags ); 
+			return [tagLogString].concat( log )
 		}
 		
 		// - slog
 		
-		public function slog(sender :*, ...args : * ) :void
+		public function slog(sender :*, tags :Array,  ...args :* ) :void
 		{
+			if ( ignoreTags( tags ) )
+				return;
+			
 			switch( _logOutput )
 			{
 				case LLogOutput.LOGIT_LOG_TRACE:
 				default:
-					logTrace.apply( this, parseSLog(sender, args) );
+					logTrace.apply( this, parseSLog(sender, tags, args) );
 			}
 		}
 		
-		private function parseSLog( sender :*, log:* ) :*
+		private function parseSLog( sender :*, tags :Array, log :* ) :*
 		{
 			var senderLogString :String = generateSenderLogString( sender );
-			return [senderLogString].concat( log );
+			
+			var tagLogString :String = generateTagLogString( tags );
+			
+			return [ senderLogString, tagLogString ].concat( log );
 		}
 		
 		private function generateSenderLogString( sender :* ) :String
@@ -112,27 +124,31 @@ package logit
 		
 		// Tags
 		
-		private function createInitialTags() :XML
+		private function generateTagLogString( tags :Array ) :String
 		{
-			var root :String = LLogTag.ROOT;
-			
-			var initialTags :XML =
-				<{LLogTag.ROOT}>
-					<{LLogTag.ERROR}/>
-					<{LLogTag.RELEASE}/>
-					<{LLogTag.DEBUG}>
-						<{LLogTag.WARNING}/>
-					</{LLogTag.DEBUG}>
-				</{LLogTag.ROOT}>
-			
-						trace( initialTags );
-			return initialTags;
+			return ( tags == null || tags.length == 0 ) ? "" : "[" + String( tags ) + "]";
 		}
 		
-		public function addTags( rootTag : String, tags :XML ) :void
+		private function ignoreTags( tags :Array ) :Boolean
 		{
-			var xml :XML = initialTags[ rootTag ];
-			xml.push( tags );
+			for each( var tag :* in tags )
+			{
+				if (_tagIgnoreList.indexOf(tag) != -1 )
+				{
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
+		public function addIgnoreTags( ...tags :* ) :void
+		{
+			for each( var tag :* in tags )
+			{
+				if (tag is String )
+					_tagIgnoreList.push( tag );
+			}
 		}
 	}
 }

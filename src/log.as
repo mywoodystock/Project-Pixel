@@ -5,9 +5,9 @@ package
 	 * ...
 	 * @author Adam
 	 */
-	public function log(...args : *) :void
+	public function log( tags :Array, ...args : *) :void
 	{
-		Logit.getInstance().log.apply(this, args);
+		Logit.instance.log.apply(this, [tags].concat( args));
 	}
 
 }
