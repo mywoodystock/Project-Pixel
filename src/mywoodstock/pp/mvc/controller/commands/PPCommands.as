@@ -7,7 +7,7 @@ package mywoodstock.pp.mvc.controller.commands
 	public class PPCommands 
 	{
 		
-		public static const STARTUP :String = "STARTUP";
+		public static const BOOTUP :String = "BOOTUP";
 		
 	}
 

@@ -2,7 +2,7 @@ package mywoodstock.pp.mvc
 {
 	import mywoodstock.pp.ProjectPixelApp;
 	import mywoodstock.pp.mvc.controller.commands.PPCommands;
-	import mywoodstock.pp.mvc.controller.commands.startup.StartupCommand;
+	import mywoodstock.pp.mvc.controller.commands.startup.BootupCommand;
 	import org.puremvc.as3.patterns.facade.Facade;
 	
 	/**
@@ -19,6 +19,7 @@ package mywoodstock.pp.mvc
 			return instance as PPFacade;
 		}
 		
+		private var _booted :Boolean;
 		
 		public function PPFacade() 
 		{
@@ -30,12 +31,12 @@ package mywoodstock.pp.mvc
 		{
 			super.initializeController();
 			
-			registerCommand( PPCommands.STARTUP, StartupCommand );
+			registerCommand( PPCommands.BOOTUP, BootupCommand );
 		}
 		
-		public function startup( app :ProjectPixelApp ) :void
+		public function bootup( app :ProjectPixelApp ) :void
 		{
-			sendNotification( PPCommands.STARTUP, app );
+			sendNotification( PPCommands.BOOTUP, app );
 		}
 		
 	}

@@ -1,7 +1,7 @@
 package mywoodstock.pp.mvc.controller.commands 
 {
 	import mywoodstock.logit.LLogTag;
-	import mywoodstock.pp.util.PPLogTags;
+	import mywoodstock.pp.util.PPLogTag;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
@@ -14,7 +14,7 @@ package mywoodstock.pp.mvc.controller.commands
 		
 		override public function execute( notification :INotification ) :void
 		{
-			log([LLogTag.DEBUG, PPLogTags.MVC, PPLogTags.CONTROLLER], notification.getName() + " command executed.");
+			slog(this, [LLogTag.DEBUG, PPLogTag.MVC, PPLogTag.CONTROLLER], notification.getName() + " command executed.");
 		}
 		
 	}

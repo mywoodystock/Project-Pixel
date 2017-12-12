@@ -4,7 +4,7 @@ package mywoodstock.pp.util
 	 * ...
 	 * @author Adam
 	 */
-	public class PPLogTags 
+	public class PPLogTag 
 	{
 		
 		// MVC

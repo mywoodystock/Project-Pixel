@@ -1,7 +1,10 @@
 package mywoodstock.pp
 {
 	import flash.display.Sprite;
+	import mywoodstock.logit.LLogTag;
+	import mywoodstock.logit.Logit;
 	import mywoodstock.pp.mvc.PPFacade;
+	import mywoodstock.pp.util.PPLogTag;
 	/**
 	 * ...
 	 * @author Adam
@@ -14,9 +17,33 @@ package mywoodstock.pp
 		
 		public function ProjectPixelApp() 
 		{
-			_facade = PPFacade.getInstance();
+			init();
+		}
+		
+		private function init() :void
+		{
+			initLogs();
 			
-			_facade.startup( this );
+			initFacade();
+			
+			bootup();
+		}
+		
+		private function initLogs() :void
+		{
+			var logit :Logit = Logit.instance;
+			
+			//logit.addIgnoreTags([PPLogTag.MVC]);
+		}
+		
+		private function initFacade() :void
+		{
+			_facade = PPFacade.getInstance();
+		}
+		
+		private function bootup() :void
+		{
+			_facade.bootup(this);
 		}
 	}
 	
